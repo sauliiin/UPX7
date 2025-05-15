@@ -42,7 +42,7 @@
                             <input class="perfil-input" id="nome" name="nomeUsuario" placeholder="Nome" required>
                         </li>
                         <li class="servicos-lista">
-                            <label class="servicos-label" for="cpfUsuario">CPF</label>
+                            <label class="servicos-label" id="cpfvalidator" for="cpfUsuario">CPF</label>
                             <input class="servicos-input" type="text" id="cpfUsuario" placeholder="000.000.000-00"
                                 oninput="anyKeyPressed(event)" maxlength="14">
                         </li>
@@ -84,7 +84,7 @@
                             placeholder="Descrição do Serviço" required>
                     </li>
                     <li class="servicos-lista">
-                        <button class="servicos-botao" id="btn"  type="button">Cadastrar Serviço</button>
+                        <button class="servicos-botao" id="btn" type="button">Cadastrar Serviço</button>
                     </li>
                 </ul>
             </div>
@@ -113,6 +113,7 @@
         </ul>
     </footer>
     <script src="JS/script_services.js"></script>
+    <script src="JS/cpfValidator.js"></script>
 </body>
 
 </html>

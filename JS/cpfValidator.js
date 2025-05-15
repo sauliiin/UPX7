@@ -1,9 +1,9 @@
-function anyKeyPressed (event) {
+function anyKeyPressed(event) {
     let campo = event.target;            // Pega o campo onde o evento ocorreu
-    campo.value = mascara(campo.value);   // Chama a função máscara para o valor do campo
+    campo.value = mascara(campo.value);  // Chama a função máscara para o valor do campo
 }
 
-function mascara (valorRecebido) {
+function mascara(valorRecebido) {
     valorRecebido = valorRecebido.replace(/\D/g,'');  
     valorRecebido = valorRecebido.replace(/(\d{3})(\d)/,"$1.$2"); // Coloca um ponto entre o terceiro e o quarto dígitos
     valorRecebido = valorRecebido.replace(/(\d{3})(\d)/,"$1.$2"); // Coloca um ponto entre o terceiro e o quarto dígitos do segundo bloco de números
@@ -12,7 +12,7 @@ function mascara (valorRecebido) {
     return valorRecebido;
 }
 
-function validarCpf (cpfFormatado) {
+function validarCpf(cpfFormatado) {
     let cpfTeste = cpfFormatado
     if (cpfTeste == '000.000.000-00' || cpfTeste == '111.111.111-11' || cpfTeste == '222.222.222-22' || cpfTeste == '333.333.333-33' || cpfTeste == '444.444.444-44' || cpfTeste == '555.555.555-55' || cpfTeste == '666.666.666-66' || cpfTeste == '777.777.777-77' || cpfTeste == '888.888.888-88' || cpfTeste == '999.999.999-99') {
         setTimeout(() => {alert('Número de CPF Inválido')}, 300);
@@ -38,7 +38,6 @@ function calculosDig(cpfv) {
     console.log(Digito);
     return Digito;
 }
-
 
 /* 
 /\D/ é uma expressão regular (regex). As barras são os delimitadores e servem para indicar que dentro dela tem uma regex. No caso, a expressão utilizada \D e para encontrar um caractere que não seja número. O g é uma flag de global (não apenas para Regex), ou seja, irá buscar a expressão entre // em toda a sua string
@@ -71,119 +70,3 @@ const cpfMask = (value) => {
 
 /////////////////// Verificar se o e-mail já está cadastrado ///////////////////
 // Salvara em um arquivo json os e-mails e cpfs cadastrados na forma de array, quando a pessoa clica em criar, verifica se já ta cadastrado.
-
-let emailsCadastrados = [];
-let cpfCadastrados = [];
-let cnhCadastrados = [];
-let usuarios = [];
-
-function cadastroUsuario() {
-    let nome = String((document.getElementById('nome')).value);
-    let senha = String((document.getElementById('senha')).value);
-    let email = String((document.getElementById('email')).value);
-    let cpf = String((document.getElementById('cpfUsuario')).value);
-    let cnh = String((document.getElementById('cnhUsuario')).value);
-    emailsCadastrados.push(email);
-    cpfCadastrados.push(cpf);
-    cnhCadastrados.push(cnh);
-    let emailsJson = JSON.stringify(emailsCadastrados);
-    let cpfJson = JSON.stringify(cpfCadastrados);
-    let cnhJson = JSON.stringify(cnhCadastrados);
-    localStorage.setItem('emails', emailsJson);
-    localStorage.setItem('cpfs', cpfJson);
-    localStorage.setItem('cnhs', cnhJson);
-    console.log(email)
-    console.log(cpfJson)
-    console.log(cnhJson)
-    if (hasDuplicates(cnhCadastrados) === true && hasDuplicates(emailsCadastrados) === true && hasDuplicates(cpfCadastrados) === true) {
-        console.log('CNH, CPF e-mail já cadastrados! Verifique os dados digitados.');
-        alert('CNH, CPF e e-mail já cadastrados! Verifique os dados digitados.');
-        cnhCadastrados.pop();
-        cpfCadastrados.pop();
-        emailsCadastrados.pop();
-    } else if (nome == '' || senha == '' || email == '' || cpf == '' || cnh == '') {
-        alert ('Todos os campos devem ser preenchidos!')
-    } else if (hasDuplicates(cpfCadastrados) === true && hasDuplicates(emailsCadastrados) === true) {
-        console.log('E-mail e CPF já cadastrados! Verifique os dados digitados.');
-        alert('E-mail e CPF já cadastrados! Verifique os dados digitados.');
-        cpfCadastrados.pop();
-        emailsCadastrados.pop();  
-    } else if (hasDuplicates(cnhCadastrados) === true && hasDuplicates(emailsCadastrados) === true) {
-        console.log('CNH e e-mail já cadastrados! Verifique os dados digitados.');
-        alert('CNH e e-mail já cadastrados! Verifique os dados digitados.');
-        cnhCadastrados.pop();
-        emailsCadastrados.pop(); 
-    } else if (hasDuplicates(cnhCadastrados) === true && hasDuplicates(cpfCadastrados) === true) {
-        console.log('CNH e CPF já cadastrados! Verifique os dados digitados.');
-        alert('CNH e CPF já cadastrados! Verifique os dados digitados.');
-        cnhCadastrados.pop();
-        cpfCadastrados.pop(); 
-    } else if (hasDuplicates(cpfCadastrados) === true) {
-        console.log('CPF já cadastrado! Verifique os dados digitados.');
-        alert('CPF ja cadastrado! Verifique os dados digitados.');
-        cpfCadastrados.pop();   // Deleta o cpf recém cadastrado em duplicidade
-    } else if (hasDuplicates(emailsCadastrados) === true) {
-        console.log('Email já cadastrado! Verifique os dados digitados.');
-        alert('Email ja cadastrado! Verifique os dados digitados.');
-        emailsCadastrados.pop();   // Deleta o e-mail recém cadastrado em duplicidade
-    } else if (hasDuplicates(cnhCadastrados) === true) {
-        console.log('CNH já cadastrada! Verifique os dados digitados.');
-        alert('CNH já cadastrada! Verifique os dados digitados.');
-        cnhCadastrados.pop();   
-    } else {
-        const usuario = criaPessoas(nome, email, cpf, cnh, senha)
-        usuarios.push(usuario);
-        let usuariosJson = JSON.stringify(usuarios);
-        localStorage.setItem('usuarios', usuariosJson);
-        console.log(usuario);
-        console.log(usuarios);
-        console.log(usuariosJson);
-        alert('Cadastro finalizado com sucesso!');
-    }
-}
-
-function hasDuplicates(array) {
-    return (new Set(array)).size !== array.length;
-}
-
-function criaPessoas (nome, email, cpf, cnh, senha) {
-    return {
-        nome: nome,
-        email: email,
-        cpf: cpf,
-        cnh: cnh,
-        senha: senha
-    }
-}
-
-const content = document.querySelector(".content");
-const inputSearch = document.querySelector("input[type='search']");
-
-let items = [];
-
-inputSearch.oninput = () => {
-  content.innerHTML = "";
-
-  items
-    .filter((item) =>
-      item.toLowerCase().includes(inputSearch.value.toLowerCase())
-    )
-    .forEach((item) => addHTML(item));
-};
-
-function addHTML(item) {
-  const div = document.createElement("div");
-  div.innerHTML = item;
-  content.append(div);
-}
-
-fetch("https://jsonplaceholder.typicode.com/users")
-  .then((data) => data.json())
-  .then((users) => {
-    users.forEach((user) => {
-      addHTML(user.name);
-      items.push(user.name);
-    });
-  });
-
-  
