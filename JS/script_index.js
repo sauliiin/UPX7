@@ -1,3 +1,108 @@
+// Função para verificar se o usuário está logado
+function isUserLoggedIn() {
+    // Verifica se há um usuário logado armazenado no localStorage
+    return localStorage.getItem("loggedInUser") !== null;
+}
+
+// Função para exibir a inicial do usuário logado
+function displayUserInitial() {
+    const loginContainer = document.getElementById("login-container");
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser")); // Obtém informações do usuário logado
+
+    if (loggedInUser && loggedInUser.fullName) {
+        // Obtém a inicial do nome do usuário
+        const userInitial = loggedInUser.fullName.charAt(0).toUpperCase();
+
+        // Substitui o conteúdo do botão de login pela inicial do usuário
+        loginContainer.innerHTML = `
+            <div class="user-initial-circle" title="Meu Perfil">
+                ${userInitial}
+            </div>
+        `;
+    }
+}
+
+// Chamar a função quando o DOM for carregado
+document.addEventListener("DOMContentLoaded", () => {
+    if (isUserLoggedIn()) {
+        displayUserInitial();
+    }
+});
+
+// Função para criar o modal de avaliação
+function createRatingModal(userFullName) {
+    // Criar o contêiner do modal
+    const modal = document.createElement("div");
+    modal.classList.add("rating-modal");
+
+    // Criar o conteúdo do modal
+    modal.innerHTML = `
+        <div class="rating-modal-content">
+            <h2>Avaliar ${userFullName}</h2>
+            <p>Você já contratou o meu serviço? Me avalie de 0 a 5!</p>
+            <input type="number" id="rating-input" min="0" max="5" step="1" placeholder="Digite uma nota de 0 a 5">
+            <div class="rating-buttons">
+                <button id="confirm-rating">Confirmar</button>
+                <button id="cancel-rating">Voltar</button>
+            </div>
+        </div>
+    `;
+
+    // Adicionar o modal ao body
+    document.body.appendChild(modal);
+
+    // Adicionar evento para confirmar a avaliação
+    const confirmButton = modal.querySelector("#confirm-rating");
+    confirmButton.addEventListener("click", () => {
+        const ratingInput = modal.querySelector("#rating-input");
+        const ratingValue = parseInt(ratingInput.value, 10);
+
+        if (isNaN(ratingValue) || ratingValue < 0 || ratingValue > 5) {
+            alert("Por favor, insira um valor inteiro entre 0 e 5.");
+        } else {
+            // Atualizar a avaliação no localStorage
+            updateUserRatingWithAverage(userFullName, ratingValue);
+            alert(`Obrigado por avaliar ${userFullName} com a nota ${ratingValue}!`);
+            closeModal(modal);
+        }
+    });
+
+    // Adicionar evento para cancelar a avaliação
+    const cancelButton = modal.querySelector("#cancel-rating");
+    cancelButton.addEventListener("click", () => closeModal(modal));
+}
+
+// Função para atualizar a avaliação do usuário considerando a média
+function updateUserRatingWithAverage(userFullName, newRating) {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find(user => user.fullName === userFullName);
+
+    if (user) {
+        // Inicializa o total de avaliações e o somatório, se não existirem
+        if (!user.totalAvaliacoes) user.totalAvaliacoes = 0;
+        if (!user.somaAvaliacoes) user.somaAvaliacoes = 0;
+
+        // Atualiza o somatório e o total de avaliações
+        user.somaAvaliacoes += newRating;
+        user.totalAvaliacoes += 1;
+
+        // Calcula a nova média
+        user.avaliacao = Math.round(user.somaAvaliacoes / user.totalAvaliacoes); // Arredonda para um valor inteiro
+
+        // Salva as alterações no localStorage
+        localStorage.setItem("users", JSON.stringify(users));
+
+        // Recarrega a interface para refletir a nova avaliação
+        loadUsersIntoFields();
+    }
+}
+
+// Função para fechar o modal
+function closeModal(modal) {
+    document.body.removeChild(modal);
+}
+
+// Atualizar a função original com a lógica do modal
 function loadUsersIntoFields(filter = "", singleUser = null) {
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
@@ -44,7 +149,11 @@ function loadUsersIntoFields(filter = "", singleUser = null) {
 
         // Adicionar a funcionalidade de clique para filtrar apenas o usuário selecionado
         userBlock.addEventListener("click", () => {
-            loadUsersIntoFields("", user.fullName); // Reutiliza a função de busca para exibir apenas o usuário clicado
+            if (isUserLoggedIn()) {
+                createRatingModal(user.fullName); // Exibe o modal de avaliação
+            } else {
+                alert("Você precisa estar logado para avaliar este usuário.");
+            }
         });
 
         // Adicionar a foto do profissional

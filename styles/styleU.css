@@ -126,3 +126,25 @@ body {
 #descricao {
     height: 150px;
 }
+
+/* Estilo do círculo ovalado com a inicial do usuário */
+.user-initial-circle {
+    margin-top: -15px;
+    width: 50px;
+    height: 50px;
+    background-color: #ffa200; /* Cor de fundo laranja */
+    color: #fff; /* Cor do texto branco */
+    border-radius: 50%; /* Deixa o formato circular */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem; /* Tamanho da letra */
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adiciona sombra */
+    transition: transform 0.3s ease; /* Efeito de transição */
+}
+
+.user-initial-circle:hover {
+    transform: scale(1.1); /* Aumenta ligeiramente no hover */
+}

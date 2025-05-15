@@ -8,6 +8,24 @@ function getLoggedInUser() {
     return loggedInUser ? JSON.parse(loggedInUser) : null;
 }
 
+// Função para exibir a inicial do usuário logado
+function displayUserInitial() {
+    const loginContainer = document.getElementById("login-container"); // Elemento onde o círculo será inserido
+    const loggedInUser = getLoggedInUser();
+
+    if (loggedInUser && loggedInUser.fullName) {
+        // Obtém a inicial do nome do usuário
+        const userInitial = loggedInUser.fullName.charAt(0).toUpperCase();
+
+        // Substitui o botão de login pela inicial do usuário
+        loginContainer.innerHTML = `
+            <div class="user-initial-circle" title="Meu Perfil">
+                ${userInitial}
+            </div>
+        `;
+    }
+}
+
 // Função para salvar informações adicionais do usuário logado
 function saveUserAdditionalInfo(cpf, telefone, instagram, facebook, tiktok) {
     const loggedInUser = getLoggedInUser();
@@ -92,8 +110,11 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Botão '.servicos-botao' não encontrado no DOM.");
     }
 
-    // Atualizar os campos "Nome" e a foto de perfil do usuário logado
+    // Atualizar os campos "Nome", foto de perfil, e exibir a inicial do usuário logado
     updateUserProfile();
+    if (getLoggedInUser()) {
+        displayUserInitial();
+    }
 });
 
 // Preencher o campo "Nome" e a foto de perfil do usuário logado

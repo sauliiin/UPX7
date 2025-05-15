@@ -248,6 +248,61 @@ img.user-rating-centralizada {
     object-fit: contain;
 }
 
+.rating-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
+.rating-modal-content {
+    background: #fff;
+    padding: 30px; /* Aumentar o padding para mais espaço interno */
+    border-radius: 20px; /* Suavizar os cantos */
+    text-align: center;
+    box-shadow: 20px 20px 60px #ffa2006b; /* Aumentar a sombra */
+    width: 500px; /* Aumentar largura do quadro */
+    line-height: 1.8; /* Aumentar o espaçamento entre linhas */
+    font-size: 1.2rem; /* Aumentar o tamanho do texto */
+}
 
+.rating-buttons button {
+    margin: 10px; /* Aumentar o espaçamento entre os botões */
+    padding: 15px 30px; /* Aumentar o tamanho dos botões */
+    border: 2px solid #ffa200; /* Adicionei uma borda laranja para combinar com o hover */
+    border-radius: 60px;
+    cursor: pointer;
+    font-size: 1rem; /* Aumentar o texto nos botões */
+    transition: background 0.5s ease, color 0.5s ease, transform 0.3s ease; /* Adiciona transições suaves */
+}
+
+.rating-buttons button:hover {
+    background: #ffa200; /* Cor de fundo no hover */
+    color: #fff; /* Altera a cor do texto no hover */
+    transform: scale(1.1); /* Aumenta o botão ligeiramente */
+}
+
+/* Estilo do círculo ovalado com a inicial do usuário */
+.user-initial-circle {
+    margin-top: -15px;
+    width: 50px;
+    height: 50px;
+    background-color: #ffa200; /* Cor de fundo laranja */
+    color: #fff; /* Cor do texto branco */
+    border-radius: 50%; /* Deixa o formato circular */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem; /* Tamanho da letra */
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adiciona sombra */
+    transition: transform 0.3s ease; /* Efeito de transição */
+}
 
