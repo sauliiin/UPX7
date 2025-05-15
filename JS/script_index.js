@@ -1,5 +1,4 @@
-// Função para carregar e exibir os usuários na página
-function loadUsersIntoFields() {
+function loadUsersIntoFields(filter = "", singleUser = null) {
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
     // Selecionar o contêiner principal onde os campos serão adicionados
@@ -10,20 +9,43 @@ function loadUsersIntoFields() {
     existingUserBlocks.forEach(block => block.remove());
 
     if (users.length === 0) {
-        const noUsersMessage = document.createElement("p");
-        noUsersMessage.textContent = "Nenhum usuário encontrado.";
-        noUsersMessage.style.color = "gray";
-        noUsersMessage.style.fontStyle = "italic";
-        servicesContainer.appendChild(noUsersMessage);
         return;
     }
 
-    users.forEach(user => {
+    // Filtrar usuários com base no filtro de pesquisa ou no usuário selecionado
+    let filteredUsers;
+    if (singleUser) {
+        // Filtra apenas o usuário selecionado
+        filteredUsers = users.filter(user => 
+            user.fullName === singleUser && 
+            user.servicos && 
+            user.servicos.length > 0
+        );
+    } else {
+        // Filtra usuários com base no campo de busca e verifica se possuem serviços
+        const searchText = filter.toLowerCase();
+        filteredUsers = users.filter(user =>
+            user.servicos &&
+            user.servicos.length > 0 &&
+            user.servicos.some(servico => servico.descricao.toLowerCase().includes(searchText))
+        );
+    }
+
+    if (filteredUsers.length === 0) {
+        return;
+    }
+
+    filteredUsers.forEach(user => {
         // Garantir que a foto do usuário está correta
         const foto = user.foto && user.foto.trim() !== "" ? user.foto : "img/foto-perfil-generica.jpg";
 
         const userBlock = document.createElement("div");
         userBlock.classList.add("user-block");
+
+        // Adicionar a funcionalidade de clique para filtrar apenas o usuário selecionado
+        userBlock.addEventListener("click", () => {
+            loadUsersIntoFields("", user.fullName); // Reutiliza a função de busca para exibir apenas o usuário clicado
+        });
 
         // Adicionar a foto do profissional
         const userImage = document.createElement("img");
@@ -41,23 +63,20 @@ function loadUsersIntoFields() {
         const fieldList = document.createElement("ul");
         fieldList.classList.add("servicos-informacoes");
 
-        // Campo Descrição do Serviço
+        // Adicionar os serviços (no mesmo formato dos outros campos)
         if (user.servicos && user.servicos.length > 0) {
             user.servicos.forEach(servico => {
-                const descricaoField = document.createElement("li");
-                descricaoField.classList.add("servicos-lista");
-                descricaoField.innerHTML = `
-                    <label class="servicos-label">Descrição do Serviço</label>
-                    <button class="servicos-input" type="button" disabled>${servico.descricao}</button>
+                const serviceField = document.createElement("li");
+                serviceField.classList.add("perfil-lista");
+                serviceField.innerHTML = `
+                    <label class="perfil-label">Serviço</label>
+                    <button class="perfil-input" type="button" disabled>${servico.descricao}</button>
                 `;
-                fieldList.appendChild(descricaoField);
+                fieldList.appendChild(serviceField);
             });
-        } else {
-            const noServicesMessage = document.createElement("p");
-            fieldList.appendChild(noServicesMessage);
         }
 
-        // Campos adicionais (Telefone, Instagram, Facebook, TikTok)
+        // Código para adicionar os campos (Telefone, Instagram, etc.)
         const fields = [
             { label: "Telefone", value: user.telefone },
             { label: "Instagram", value: user.instagram },
@@ -77,8 +96,27 @@ function loadUsersIntoFields() {
             }
         });
 
-        // Adicionar o bloco ao contêiner principal
+        // Adicionar campo de avaliação
+        const avaliacaoField = document.createElement("li");
+        avaliacaoField.classList.add("perfil-lista");
+
+        const avaliacaoLabel = document.createElement("label");
+        avaliacaoLabel.classList.add("perfil-label");
+        avaliacaoLabel.textContent = "Avaliação";
+
+        const avaliacaoImage = document.createElement("img");
+        avaliacaoImage.classList.add("user-rating-centralizada");
+        avaliacaoImage.src = user.avaliacao ? `img/${user.avaliacao}.png` : "img/0.png";
+        avaliacaoImage.alt = user.avaliacao ? `${user.avaliacao} estrelas` : "Não avaliado";
+
+        avaliacaoField.appendChild(avaliacaoLabel);
+        avaliacaoField.appendChild(avaliacaoImage);
+        fieldList.appendChild(avaliacaoField);
+
+        // Adicionar a lista de campos ao bloco do usuário
         userBlock.appendChild(fieldList);
+
+        // Adicionar o bloco ao contêiner principal
         servicesContainer.appendChild(userBlock);
     });
 }
@@ -90,10 +128,16 @@ function addNewUser(newUser) {
     localStorage.setItem("users", JSON.stringify(users));
 }
 
-// Inicializar os dados e carregar os usuários na página
+// Função para inicializar os dados e carregar usuários
 document.addEventListener("DOMContentLoaded", () => {
     seedUsers(); // Adiciona os usuários seedados, caso ainda não tenham sido adicionados
     loadUsersIntoFields(); // Carrega todos os usuários na página
+
+    const searchInput = document.getElementById("search");
+    searchInput.addEventListener("input", (event) => {
+        const filter = event.target.value; // Texto digitado no campo de busca
+        loadUsersIntoFields(filter); // Atualiza os resultados com base no texto digitado
+    });
 });
 
 function seedUsers() {
@@ -111,6 +155,7 @@ function seedUsers() {
             instagram: "@Garcia_Jose",
             facebook: "José Geraldo Garcia",
             tiktok: "@Garcia_Jose",
+            avaliacao: 5,
         },
         {
             fullName: "Marcos Ferreira",
@@ -120,6 +165,7 @@ function seedUsers() {
             instagram: "@marcos.eletricista",
             facebook: "fb.com/marcoseletricista",
             tiktok: "@eletricistamarcos",
+            avaliacao: 4,
         },
         {
             fullName: "Carlos Menezes",
@@ -129,6 +175,7 @@ function seedUsers() {
             instagram: "@carlosencanador",
             facebook: "fb.com/carlosencanador",
             tiktok: "@encanadorcarlos",
+            avaliacao: 5,
         },
         {
             fullName: "Ana Beatriz Rocha",
@@ -138,6 +185,7 @@ function seedUsers() {
             instagram: "@anapinturas",
             facebook: "fb.com/anapinturas",
             tiktok: "@anabeatrizpintora",
+            avaliacao: 3,
         },
         {
             fullName: "Rodrigo Campos",
@@ -147,6 +195,7 @@ function seedUsers() {
             instagram: "@rodrigoarcond",
             facebook: "fb.com/rodrigoar",
             tiktok: "@rodrigoartech",
+            avaliacao: 2,
         },
         {
             fullName: "Lucas Almeida",
@@ -156,33 +205,37 @@ function seedUsers() {
             instagram: "@lucasgesseiro",
             facebook: "fb.com/lucas.gesso",
             tiktok: "@lucasgesseiro",
+            avaliacao: 5,
         },
         {
-            fullName: "Mariana Teixeira",
-            foto: "img/Perfis/2.jpg",
+            fullName: "Eduardo Campos",
+            foto: "img/prestador7.png",
             servicos: [{ descricao: "Checklists de manutenção predial, pequenos reparos, hidráulica, elétrica e alvenaria leve." }],
             telefone: "(31) 99888-0022",
             instagram: "@marianatechpredial",
             facebook: "fb.com/marianapredial",
             tiktok: "@marianatechpredial",
+            avaliacao: 1,
         },
         {
-            fullName: "Eduardo Lima",
-            foto: "img/prestador7.png",
+            fullName: "Mariana Teixeira",
+            foto: "img/prestador8.jpg",
             servicos: [{ descricao: "Instalação de porcelanato, cerâmica, vinílico, laminado e rodapés." }],
             telefone: "(31) 91000-0099",
             instagram: "@edu.pisos",
             facebook: "fb.com/edupisos",
             tiktok: "@edu.pisos",
+            avaliacao: 4,
         },
         {
             fullName: "Sandra Moura",
-            foto: "img/Perfis/3.jpeg",
+            foto: "img/prestador9.jpg",
             servicos: [{ descricao: "Aplicação de manta asfáltica, pintura impermeabilizante, tratamento de lajes e paredes úmidas." }],
             telefone: "(31) 99123-4567",
             instagram: "@imper.sandra",
             facebook: "fb.com/sandraimper",
             tiktok: "@imper.sandra",
+            avaliacao: 3,
         },
     ];
 
@@ -203,3 +256,6 @@ document.addEventListener("DOMContentLoaded", () => {
     seedUsers();
     loadUsersIntoFields();
 });
+
+
+

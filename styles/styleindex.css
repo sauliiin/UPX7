@@ -173,6 +173,81 @@ body {
     list-style: none; /* Remove os marcadores da lista */
 }
 
+/* Imagem de Avaliação Centralizada */
+.user-rating-centralizada {
+    width: 80px; /* Define o tamanho desejado da imagem */
+    height: 80px; /* Define o tamanho desejado da imagem */
+    margin: 10px auto; /* Centraliza horizontalmente */
+    display: block; /* Garante que seja tratado como bloco */
+    object-fit: contain; /* Garante que a imagem mantenha suas proporções */
+}
+
+/* Campo de Avaliação Alinhado */
+.perfil-lista {
+    margin-bottom: 15px; /* Espaçamento entre os campos */
+    text-align: center; /* Centraliza o texto e a imagem */
+}
+
+.perfil-label {
+    font-weight: bold;
+    color: #333;
+    display: block; /* Garante que a label fique em uma nova linha */
+    margin-bottom: 5px;
+}
+
+/* Sobrescrever as regras globais do reset */
+img.user-rating-centralizada {
+    width: 200px !important; /* Força o tamanho da largura */
+    height: 80px !important; /* Força o tamanho da altura */
+}
+
+/* Formulário de Pesquisa */
+.form-pesquisa {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaçamento entre os elementos */
+}
+
+/* Campo de Busca */
+.input-filtro {
+    flex: 1; /* Faz o campo de busca ocupar o espaço disponível */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Contêiner dos Botões */
+.botoes-container {
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+}
+
+/* Botão de Atualizar */
+.botao-atualizar {
+    background-color: var(--branco);
+    border: 1px solid var(--cinza-borda);
+    border-radius: 100%;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px; /* Mesma altura do campo de busca */
+    width: 50px; /* Mesma largura do botão de busca */
+    box-shadow: 0 2px 4px var(--sombra);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.botao-atualizar:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 8px var(--sombra);
+}
+
+.img-atualizar {
+    width: 100%; /* Imagem ocupa todo o botão */
+    height: auto;
+    object-fit: contain;
+}
+
 
 
 
